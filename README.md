@@ -3,9 +3,9 @@
 A Python based MySQL client made using mysql-python-connector and pandas libraries.
 <br>
 
-#Dependencies
+## Dependencies
 
 Run on your pc:
-'''bash
+```bash
 pip install mysql-python-connector && pip install pandas
-'''
+```
