@@ -66,20 +66,27 @@ def fs():
     x.execute(m)
 #Function defined for checking users
 def userchk():
-    x.execute("create table if not exists users(Username varchar(20) not null primary key,Password varchar(20));")    
-    l=input("Please enter your username: ")
-    p=input("Please enter your password: ")
-    x.execute("select * from users;")
-    n=x.fetchall()
-    for i in range(len(n)):
-        if n[i][0]==l and n[i][1]==p:
-            global login
+    x.execute(
+        "CREATE TABLE IF NOT EXISTS users(Username VARCHAR(20) NOT NULL PRIMARY KEY, Password VARCHAR(20));"
+    )    
+    l = input("Please enter your username: ")
+    p = input("Please enter your password: ")
+    
+    x.execute("SELECT * FROM users;")
+    n = x.fetchall()
+    
+    # Use a flag to track successful login
+    login = False
+    
+    for record in n:
+        if record[0] == l and record[1] == p:
             login = True
             print("Logged in successfully...")
             break
-        else:
-            print("Kindly check your username and password...")        
-            break
+    
+    if not login:
+        print("Kindly check your username and password...")
+
 
 #Function for adding users
 def useradd():
