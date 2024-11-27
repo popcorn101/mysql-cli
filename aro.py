@@ -101,9 +101,40 @@ def useradd():
 
 #Function for adding to cart
 def cart():
-    l=int(input("Enter the product ID you would add: "))
-    x.execute("create table if not exists cart(ItemNo int not null primary key,ItemName varchar(30),Category varchar(20),Price decimal(7,2));")
-    x.execute("insert into cart select * from products where ItemNo=%s",(l,))
+    l = int(input("Enter the product ID you would like to add to the cart: "))
+
+    # Ensure `cart` table exists
+    x.execute("""
+        CREATE TABLE IF NOT EXISTS cart(
+            ItemNo INT NOT NULL PRIMARY KEY,
+            ItemName VARCHAR(30),
+            Category VARCHAR(20),
+            Price DECIMAL(7,2)
+        );
+    """)
+
+    # Check if the product exists and has sufficient quantity
+    x.execute("SELECT ItemName, Category, Price, Quantity FROM products WHERE ItemNo = %s", (l,))
+    product = x.fetchone()
+
+    if product:
+        item_name, category, price, quantity = product
+        
+        if quantity > 0:
+            # Insert the item into the `cart` table
+            x.execute(
+                "INSERT INTO cart (ItemNo, ItemName, Category, Price) VALUES (%s, %s, %s, %s)",
+                (l, item_name, category, price)
+            )
+            # Reduce the quantity by 1 in the `products` table
+            x.execute("UPDATE products SET Quantity = Quantity - 1 WHERE ItemNo = %s", (l,))
+            conn.commit()  # Commit both changes
+            print(f"{item_name} has been added to the cart.")
+        else:
+            print(f"Sorry, {item_name} is out of stock.")
+    else:
+        print("The product ID you entered does not exist.")
+
     
 #Function for clearing cart 
 def clrcart():
