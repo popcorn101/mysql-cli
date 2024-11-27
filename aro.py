@@ -64,28 +64,26 @@ def remit():
 def fs():
     m=input("Enter your sql query: ")
     x.execute(m)
+
+
 #Function defined for checking users
 def userchk():
+    global login  # Declare global to modify it
     x.execute(
         "CREATE TABLE IF NOT EXISTS users(Username VARCHAR(20) NOT NULL PRIMARY KEY, Password VARCHAR(20));"
-    )    
-    l = input("Please enter your username: ")
-    p = input("Please enter your password: ")
+    )
+    l = input("Please enter your username: ").strip()
+    p = input("Please enter your password: ").strip()
     
-    x.execute("SELECT * FROM users;")
-    n = x.fetchall()
+    # Directly check for user in the database
+    x.execute("SELECT * FROM users WHERE Username = %s AND Password = %s", (l, p))
+    user = x.fetchone()  # Fetch only one record
     
-    # Use a flag to track successful login
-    login = False
-    
-    for record in n:
-        if record[0] == l and record[1] == p:
-            login = True
-            print("Logged in successfully...")
-            break
-    
-    if not login:
-        print("Kindly check your username and password...")
+    if user:
+        login = True
+        print("Logged in successfully...")
+    else:
+        print("Invalid username or password. Please try again.")
 
 
 #Function for adding users
