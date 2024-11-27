@@ -8,7 +8,7 @@ admin=False
 
 #Initialising MySQL
 try:
-    conn=sql.connect(host='localhost',user='root',passwd='bestCSproject12@')
+    conn=sql.connect(host='localhost',user='root',passwd='123456')
 
     if conn.is_connected():
         print("Connection OK")
